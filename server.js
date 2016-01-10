@@ -5,7 +5,6 @@ var mongoose = require('mongoose');
 //var assert = require('assert');
 var url=require('url');
 var http=require('http');
-var validUrl = require('valid-url');
 var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
