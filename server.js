@@ -63,8 +63,42 @@ function newMini(subUrl) {
   });
   });
 }
+});
 
+app.get('/new/*?', function(req, res) {
+//get the url submitted
+var submitUrl = req.body.origurl;
+//***need to check if submitUrl has http:// at the start
+var re= /^(https?:\/\/)/;
+if(re.test(submitUrl)==false) {
+  console.log('no http://');
+var httpSubmitUrl = 'http://' + submitUrl;
+newMini(httpSubmitUrl);
 
+} else {
+console.log('attempting to add: ' + submitUrl)
+newMini(submitUrl);
+
+}
+//***started change to a function to generate new miniurl
+function newMini(subUrl) {
+  console.log('attempting to add: ' + subUrl)
+
+  //determine the number of urls in the database to assign a sequence id to create the miniurl
+  miniurl.find({}).count({}, function(err, count) {
+    console.log('number of docs ' + count);
+  //create the miniurl
+  miniurl.create({origurl: subUrl, seq: count+1, miniurl: 'http://s-u.herokuapp.com/' + (count+1)}, function(err,result) {
+    console.log('added ' + subUrl + ' to the list with sequence: ' + (count+1));
+  //probably not the fastest way to do it, but returns the created miniurl from the database and send it to the user
+    miniurl.findOne({'origurl': subUrl},{'_id':0, 'origurl':1, 'miniurl':1}, function (err, result) {
+      if (err) return console.log(err);
+      console.log('your short url is: ' + result);
+      res.send(result);
+    });
+  });
+  });
+}
 });
 
 
