@@ -1,8 +1,6 @@
 'use strict';
 //call packages used
-//var mongojs = require('mongojs');
 var mongoose = require('mongoose');
-//var assert = require('assert');
 var url=require('url');
 var http=require('http');
 var bodyParser = require('body-parser');
@@ -57,9 +55,9 @@ function newMini(subUrl) {
   miniurl.create({origurl: subUrl, seq: count+1, miniurl: 'http://s-u.herokuapp.com/' + (count+1)}, function(err,result) {
     console.log('added ' + subUrl + ' to the list with sequence: ' + (count+1));
   //probably not the fastest way to do it, but returns the created miniurl from the database and send it to the user
-    miniurl.findOne({origurl: subUrl},{origurl:1, miniurl:1}, function (err, result) {
+    miniurl.find({origurl: subUrl},{origurl:1, miniurl:1}, function (err, result) {
       if (err) return console.log(err);
-      console.log('your short url is: ' + result.miniurl);
+      console.log('your short url is: ' + result);
       res.send(result);
     });
   });
