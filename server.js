@@ -55,7 +55,7 @@ function newMini(subUrl) {
     console.log('number of docs ' + count);
     //probably not the fastest way to do it, but returns the created miniurl from the database and send it to the user
       miniurl.findOne({origurl: subUrl},{origurl:1, miniurl:1}, function (err, result) {
-        if (err) return console.log(err);
+        if (err) console.log(err);
         console.log('your short url is: ' + result.miniurl);
         res.send(result);
       });
