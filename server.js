@@ -67,7 +67,7 @@ function newMini(subUrl) {
 
 app.get('/new/*?', function(req, res) {
 //get the url submitted
-var submitUrl = req.params.new;
+var submitUrl = req.params[0];
 //***need to check if submitUrl has http:// at the start
 var re= /^(https?:\/\/)/;
 if(re.test(submitUrl)==false) {
