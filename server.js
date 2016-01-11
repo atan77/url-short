@@ -21,7 +21,7 @@ app.get('/', function(req, res) {
     });
 
 //mongoose to connect to shorturl database
-mongoose.connect(process.env.MONGOLAB_URI, function(err,connect) {
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost:27017/shorturl', function(err,connect) {
   if(err) return console.log(err);
   console.log('Mongoose connected');
 });
@@ -39,40 +39,62 @@ var re= /^(https?:\/\/)/;
 if(re.test(submitUrl)==false) {
   console.log('no http://');
 var httpSubmitUrl = 'http://' + submitUrl;
+newMini(httpSubmitUrl);
+  //determine the number of urls in the database to assign a sequence id to create the miniurl
+//  miniurl.find({}).count({}, function(err, count) {
+//    console.log('number of docs ' + count);
+  //create the miniurl
+//  miniurl.create({origurl: httpSubmitUrl, seq: count+1, miniurl: 'http://s-u.herokuapp.com/' + (count+1)}, function(err,result) {
+//    console.log('added ' + httpSubmitUrl + ' to the list with sequence: ' + (count+1));
+  //probably not the fastest way to do it, but returns the created miniurl from the database and send it to the user
+//    miniurl.findOne({origurl: httpSubmitUrl}, function (err, result) {
+//      if (err) return console.log(err);
+//      console.log('your short url is: ' + result.miniurl);
+//      res.send('your short url is: ' + result.miniurl)
+//    });
+//  });
+//  });
+
+
+} else {
+console.log('attempting to add: ' + submitUrl)
+newMini(submitUrl);
+//determine the number of urls in the database to assign a sequence id to create the miniurl
+//miniurl.find({}).count({}, function(err, count) {
+//  console.log('number of docs ' + count);
+//create the miniurl
+//miniurl.create({origurl: submitUrl, seq: count+1, miniurl: 'http://s-u.herokuapp.com/' + (count+1)}, function(err,result) {
+//  console.log('added ' + submitUrl + ' to the list with sequence: ' + (count+1));
+//probably not the fastest way to do it, but returns the created miniurl from the database and send it to the user
+//  miniurl.findOne({origurl: submitUrl}, function (err, result) {
+//    if (err) return console.log(err);
+//    console.log('your short url is: ' + result.miniurl);
+//    res.send('your short url is: ' + result.miniurl)
+//  });
+//});
+//});
+}
+//***started change to a function to generate new miniurl
+
+function newMini(subUrl) {
+  console.log('attempting to add: ' + subUrl)
+
   //determine the number of urls in the database to assign a sequence id to create the miniurl
   miniurl.find({}).count({}, function(err, count) {
     console.log('number of docs ' + count);
   //create the miniurl
-  miniurl.create({origurl: httpSubmitUrl, seq: count+1, miniurl: 'http://s-u.herokuapp.com/' + (count+1)}, function(err,result) {
-    console.log('added ' + httpSubmitUrl + ' to the list with sequence: ' + (count+1));
+  miniurl.create({origurl: subUrl, seq: count+1, miniurl: 'http://s-u.herokuapp.com/' + (count+1)}, function(err,result) {
+    console.log('added ' + subUrl + ' to the list with sequence: ' + (count+1));
   //probably not the fastest way to do it, but returns the created miniurl from the database and send it to the user
-    miniurl.findOne({origurl: httpSubmitUrl}, function (err, result) {
+    miniurl.findOne({origurl: subUrl}, function (err, result) {
       if (err) return console.log(err);
       console.log('your short url is: ' + result.miniurl);
       res.send('your short url is: ' + result.miniurl)
     });
   });
   });
-
-
-} else {
-console.log('attempting to add: ' + submitUrl)
-
-//determine the number of urls in the database to assign a sequence id to create the miniurl
-miniurl.find({}).count({}, function(err, count) {
-  console.log('number of docs ' + count);
-//create the miniurl
-miniurl.create({origurl: submitUrl, seq: count+1, miniurl: 'http://s-u.herokuapp.com/' + (count+1)}, function(err,result) {
-  console.log('added ' + submitUrl + ' to the list with sequence: ' + (count+1));
-//probably not the fastest way to do it, but returns the created miniurl from the database and send it to the user
-  miniurl.findOne({origurl: submitUrl}, function (err, result) {
-    if (err) return console.log(err);
-    console.log('your short url is: ' + result.miniurl);
-    res.send('your short url is: ' + result.miniurl)
-  });
-});
-});
 }
+
 });
 
 app.get('/:seq', function(req, res) {
