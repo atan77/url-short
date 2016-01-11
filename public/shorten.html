@@ -22,6 +22,7 @@
     <code>{
 http://s-u.herokuapp.com/new/http://codepen.io/ashleytan/pen/vOqPVa
 }</code>
+<br>
 <p>
   Or submit a url below
 </p>
@@ -41,10 +42,13 @@ http://s-u.herokuapp.com/new/http://codepen.io/ashleytan/pen/vOqPVa
 </code>
 
 <form name='submiturl' action="/shorturl" method="POST">
-   <p>Enter a url to shorten</p>
+   <p>
+     <h3>Enter a url to shorten</h3>
+   </p>
    <!--for each movie in the array create a radio button with the movie details -->
      <p>
        url to shorten: <input type="text" id="origurl" name="origurl" value="" required/>
+     </p>
    <input type="submit" value="Submit"/>
 </form>
     </div>
