@@ -65,7 +65,7 @@ function newMini(subUrl) {
     miniurl.findOne({origurl: subUrl}, function (err, result) {
       if (err) return console.log(err);
       console.log('your short url is: ' + result.miniurl);
-      res.send('your short url is: ' + result.miniurl)
+      result.send('your short url is: ' + result.miniurl)
     });
   });
   });
