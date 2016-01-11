@@ -1,7 +1,6 @@
 'use strict';
 //call packages used
 var mongoose = require('mongoose');
-var url=require('url');
 var http=require('http');
 var bodyParser = require('body-parser');
 var express = require('express');
@@ -52,15 +51,34 @@ function newMini(subUrl) {
   miniurl.find({}).count({}, function(err, count) {
     console.log('number of docs ' + count);
   //create the miniurl
-  miniurl.create({origurl: subUrl, seq: count+1, miniurl: 'http://s-u.herokuapp.com/' + (count+1)}, function(err,result) {
-    console.log('added ' + subUrl + ' to the list with sequence: ' + (count+1));
+//  miniurl.create({origurl: subUrl, seq: count+1, miniurl: 'http://s-u.herokuapp.com/' + (count+1)}, function(err,result) {
+//    console.log('added ' + subUrl + ' to the list with sequence: ' + (count+1));
   //probably not the fastest way to do it, but returns the created miniurl from the database and send it to the user
+//    miniurl.findOne({'origurl': subUrl},{'_id':0, 'origurl':1, 'miniurl':1}, function (err, result) {
+//      if (err) return console.log(err);
+//      console.log('your short url is: ' + result);
+//      res.send(result);
+//    });
+//  });
+
     miniurl.findOne({'origurl': subUrl},{'_id':0, 'origurl':1, 'miniurl':1}, function (err, result) {
       if (err) return console.log(err);
+      if(result == null) {
+        miniurl.create({origurl: subUrl, seq: count+1, miniurl: 'http://s-u.herokuapp.com/' + (count+1)}, function(err,result) {
+            console.log('added ' + subUrl + ' to the list with sequence: ' + (count+1));
+          //probably not the fastest way to do it, but returns the created miniurl from the database and send it to the user
+            miniurl.findOne({'origurl': subUrl},{'_id':0, 'origurl':1, 'miniurl':1}, function (err, result) {
+              if (err) return console.log(err);
+              console.log('your short url is: ' + result);
+              res.send(result);
+            });
+          });
+      } else {
       console.log('your short url is: ' + result);
       res.send(result);
-    });
+    }
   });
+
   });
 }
 });
